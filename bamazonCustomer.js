@@ -25,6 +25,7 @@ connection.connect(function(err) {
 function start() {
   connection.query("SELECT * FROM products", function(err, results) {
     if (err) throw err;
+    console.log(results);
     askID();
   });
 }
@@ -54,6 +55,10 @@ function checkDB(itemID, itemCount) {
     function(err, results) {
       if (err) throw err;
       if (itemCount <= results[0].stock_quantity) {
+        connection.query(
+          "UPDATE products SET stock_quantity = stock_quantity - ?",
+          [itemCount]
+        );
         console.log("order success");
       } else {
         console.log("Insufficient quantity!");
